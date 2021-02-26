@@ -5,23 +5,28 @@ using UnityEngine;
 
 public class Game : MonoBehaviour
 {
-    private static int SCREEN_W = 120;
-    private static int SCREEN_H = 60;
+    private static int SCREEN_W = 20;
+    private static int SCREEN_H = 10;
 
     public float speed = 0.1f;
     private float time = 0;
 
-    Cell[,] grid = new Cell[SCREEN_W, SCREEN_H];
+    public Camera cam;
+    public int size = 60;
+
+    Cell[,] grid = new Cell[1200, 600];
     // Start is called before the first frame update
     void Start()
     {
         Console.Write("start fnc");
         PlaceCells();
+        cam.orthographicSize=size;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (size>60) size=60;
         if (time >= speed)
         {
             time = 0;
@@ -35,9 +40,9 @@ public class Game : MonoBehaviour
     void PlaceCells()
     {
         Console.Write("start");
-        for (int y=0; y<SCREEN_H; y++)
+        for (int y=0; y<SCREEN_H*size; y++)
         {
-            for(int x=0; x<SCREEN_W;x++)
+            for(int x=0; x<SCREEN_W*size;x++)
             {
                 Cell cell = Instantiate(Resources.Load("Prefabs/Cell", typeof(Cell)), new Vector2(x*2, y*2), Quaternion.identity) as Cell;
                 cell.SetAlive(RandomAliveCell());
@@ -55,29 +60,31 @@ public class Game : MonoBehaviour
     }
 
     void CountNeighbors(){
+        int SH = SCREEN_H * size;
+        int SW = SCREEN_W * size;
         int numNeighbors;
-        for (int y=0; y<SCREEN_H; y++)
+        for (int y=0; y<SH; y++)
         {
-            for(int x=0; x<SCREEN_W;x++)
+            for(int x=0; x<SW;x++)
             {
                 numNeighbors = 0;
-                if (grid[(x-1+SCREEN_W)%SCREEN_W,(y+1)%SCREEN_H].isAlive)
+                if (grid[(x-1+SW)%SW,(y+1)%SH].isAlive)
                     numNeighbors++;
-                if (grid[(x-1+SCREEN_W)%SCREEN_W,(y)%SCREEN_H].isAlive)
+                if (grid[(x-1+SW)%SW,(y)%SH].isAlive)
                     numNeighbors++;
-                if (grid[(x-1+SCREEN_W)%SCREEN_W,(y-1+SCREEN_H)%SCREEN_H].isAlive)
-                    numNeighbors++;
-
-                if (grid[x,(y+1)%SCREEN_H].isAlive)
-                    numNeighbors++;
-                if (grid[x,(y-1+SCREEN_H)%SCREEN_H].isAlive)
+                if (grid[(x-1+SW)%SW,(y-1+SH)%SH].isAlive)
                     numNeighbors++;
 
-                if (grid[(x+1)%SCREEN_W,(y+1)%SCREEN_H].isAlive)
+                if (grid[x,(y+1)%SH].isAlive)
                     numNeighbors++;
-                if (grid[(x+1)%SCREEN_W,(y)%SCREEN_H].isAlive)
+                if (grid[x,(y-1+SH)%SH].isAlive)
                     numNeighbors++;
-                if (grid[(x+1)%SCREEN_W,(y-1+SCREEN_H)%SCREEN_H].isAlive)
+
+                if (grid[(x+1)%SW,(y+1)%SH].isAlive)
+                    numNeighbors++;
+                if (grid[(x+1)%SW,(y)%SH].isAlive)
+                    numNeighbors++;
+                if (grid[(x+1)%SW,(y-1+SH)%SCREEN_H].isAlive)
                     numNeighbors++;
 
                 grid[x,y].numNeighbors = numNeighbors;
@@ -87,9 +94,9 @@ public class Game : MonoBehaviour
 
     void Populate()
     {
-        for (int y=0; y<SCREEN_H; y++)
+        for (int y=0; y<SCREEN_H*size; y++)
         {
-            for(int x=0; x<SCREEN_W;x++)
+            for(int x=0; x<SCREEN_W*size;x++)
             {
                  if (grid[x,y].isAlive)
                 {
