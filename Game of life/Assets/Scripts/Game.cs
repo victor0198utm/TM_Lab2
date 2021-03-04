@@ -5,29 +5,35 @@ using UnityEngine;
 
 public class Game : MonoBehaviour
 {
-    private static int SCREEN_W = 20;
-    private static int SCREEN_H = 10;
+    private static int SCREEN_W = 4;
+    private static int SCREEN_H = 2;
 
-    public float speed = 0.1f;
+    public int speed = 10;
     private float time = 0;
 
     public Camera cam;
-    public int size = 60;
+    public Transform camPosition;
+    public int size = 40;
 
-    Cell[,] grid = new Cell[1200, 600];
+    Cell[,] grid = new Cell[160, 80];
     // Start is called before the first frame update
     void Start()
     {
         Console.Write("start fnc");
         PlaceCells();
-        cam.orthographicSize=size;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (size>60) size=60;
-        if (time >= speed)
+        cam.orthographicSize = size*2;
+        camPosition.position = new Vector3(size*4-1, size*2-1, -10);
+        
+        if (size>40) size=40;
+        if (speed>10) speed=10;
+        if (speed<0) speed=0;
+
+        if (time >= (10-speed)/50.0)
         {
             time = 0;
             CountNeighbors();
@@ -84,7 +90,7 @@ public class Game : MonoBehaviour
                     numNeighbors++;
                 if (grid[(x+1)%SW,(y)%SH].isAlive)
                     numNeighbors++;
-                if (grid[(x+1)%SW,(y-1+SH)%SCREEN_H].isAlive)
+                if (grid[(x+1)%SW,(y-1+SH)%SH].isAlive)
                     numNeighbors++;
 
                 grid[x,y].numNeighbors = numNeighbors;
