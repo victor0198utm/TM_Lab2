@@ -8,7 +8,7 @@ public class Game : MonoBehaviour
     private static int SCREEN_W = 4;
     private static int SCREEN_H = 2;
 
-    public int speed = 10;
+    public int speed = 7;
     private float time = 0;
 
     public Camera cam;
@@ -16,30 +16,55 @@ public class Game : MonoBehaviour
     public int size = 40;
 
     Cell[,] grid = new Cell[160, 80];
+
+    public bool simulate = true;
+
     // Start is called before the first frame update
     void Start()
     {
         Console.Write("start fnc");
+        if (size>40) size=40;
+        if (speed>10) speed=10;
         PlaceCells();
     }
 
     // Update is called once per frame
     void Update()
     {
-        cam.orthographicSize = size*2;
-        camPosition.position = new Vector3(size*4-1, size*2-1, -10);
-        
         if (size>40) size=40;
         if (speed>10) speed=10;
         if (speed<0) speed=0;
 
-        if (time >= (10-speed)/50.0)
-        {
-            time = 0;
-            CountNeighbors();
-            Populate();
-        }else {
-            time += Time.deltaTime;
+        cam.orthographicSize = size*2;
+        camPosition.position = new Vector3(size*4-1, size*2-1, -10);
+
+        if(simulate == true){
+            if (time >= (10-speed)/50.0)
+            {
+                time = 0;
+                CountNeighbors();
+                Populate();
+            }else {
+                time += Time.deltaTime;
+            }
+        }
+        
+        UserInput();
+    }
+
+    void UserInput(){
+        if(Input.GetMouseButtonDown(0)){
+            Vector2 mousePoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+            int x = Mathf.RoundToInt(mousePoint.x/2);
+            int y = Mathf.RoundToInt(mousePoint.y/2);
+            if(x>=0 && y>=0 && x<SCREEN_W*size && y<SCREEN_H*size){
+                grid[x, y].SetAlive(!grid[x, y].isAlive);
+            }
+        }
+
+        if(Input.GetKeyDown(KeyCode.P)){   
+            simulate = !simulate;
         }
     }
 
