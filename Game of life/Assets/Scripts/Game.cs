@@ -18,6 +18,8 @@ public class Game : MonoBehaviour
     Cell[,] grid = new Cell[160, 80];
 
     public bool simulate = true;
+    private int nowX = -10;
+    private int nowY = -10;
 
     // Start is called before the first frame update
     void Start()
@@ -53,18 +55,26 @@ public class Game : MonoBehaviour
     }
 
     void UserInput(){
-        if(Input.GetMouseButtonDown(0)){
+        if(Input.GetMouseButton(0)){
             Vector2 mousePoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
             int x = Mathf.RoundToInt(mousePoint.x/2);
             int y = Mathf.RoundToInt(mousePoint.y/2);
-            if(x>=0 && y>=0 && x<SCREEN_W*size && y<SCREEN_H*size){
+            if((x!=nowX || y!=nowY) && x>=0 && y>=0 && x<SCREEN_W*size && y<SCREEN_H*size){
                 grid[x, y].SetAlive(!grid[x, y].isAlive);
+                nowX = x;
+                nowY = y;
             }
         }
 
         if(Input.GetKeyDown(KeyCode.P)){   
             simulate = !simulate;
+        }
+
+        if(Input.GetKeyDown(KeyCode.C)){
+            for (int y=0; y<SCREEN_H*size; y++)
+                for(int x=0; x<SCREEN_W*size;x++)
+                    grid[x,y].SetAlive(false);
         }
     }
 
@@ -78,7 +88,6 @@ public class Game : MonoBehaviour
                 Cell cell = Instantiate(Resources.Load("Prefabs/Cell", typeof(Cell)), new Vector2(x*2, y*2), Quaternion.identity) as Cell;
                 cell.SetAlive(RandomAliveCell());
                 grid[x,y] = cell;
-
             }
         }
     }

@@ -262,6 +262,7 @@ MonoBehaviour:
   cam: {fileID: 519420031}
   camPosition: {fileID: 519420032}
   size: 40
+  simulate: 1
 --- !u!4 &1086152784
 Transform:
   m_ObjectHideFlags: 0
