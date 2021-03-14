@@ -8,12 +8,12 @@ public class Game : MonoBehaviour
     private static int SCREEN_W = 4;
     private static int SCREEN_H = 2;
 
-    public int speed = 7;
+    public int speed = 6;
     private float time = 0;
 
     public Camera cam;
     public Transform camPosition;
-    public int size = 40;
+    public int size = 20;
 
     Cell[,] grid = new Cell[160, 80];
 
@@ -24,6 +24,7 @@ public class Game : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Screen.SetResolution(1200, 600, false);
         Console.Write("start fnc");
         if (size>40) size=40;
         if (speed>10) speed=10;
@@ -34,6 +35,7 @@ public class Game : MonoBehaviour
     void Update()
     {
         if (size>40) size=40;
+        if (size<1) size=1;
         if (speed>10) speed=10;
         if (speed<0) speed=0;
 
@@ -69,6 +71,7 @@ public class Game : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.P)){   
             simulate = !simulate;
+            AudioListener.pause = !AudioListener.pause;
         }
 
         if(Input.GetKeyDown(KeyCode.C)){
@@ -76,17 +79,28 @@ public class Game : MonoBehaviour
                 for(int x=0; x<SCREEN_W*size;x++)
                     grid[x,y].SetAlive(false);
         }
+
+        if(Input.GetKeyDown(KeyCode.I)){   
+            size++;
+        }
+
+        if(Input.GetKeyDown(KeyCode.D)){   
+            size--;
+        }
     }
 
     void PlaceCells()
     {
         Console.Write("start");
-        for (int y=0; y<SCREEN_H*size; y++)
+        for (int y=0; y<80; y++)
         {
-            for(int x=0; x<SCREEN_W*size;x++)
+            for(int x=0; x<160;x++)
             {
+                
                 Cell cell = Instantiate(Resources.Load("Prefabs/Cell", typeof(Cell)), new Vector2(x*2, y*2), Quaternion.identity) as Cell;
-                cell.SetAlive(RandomAliveCell());
+                if(x<SCREEN_W*size && y<SCREEN_H*size)
+                    cell.SetAlive(RandomAliveCell());
+                else cell.SetAlive(false);
                 grid[x,y] = cell;
             }
         }
@@ -103,42 +117,55 @@ public class Game : MonoBehaviour
         int SH = SCREEN_H * size;
         int SW = SCREEN_W * size;
         int numNeighbors;
-        for (int y=0; y<SH; y++)
+        for (int y=0; y<SCREEN_H*40; y++)
         {
-            for(int x=0; x<SW;x++)
+            for(int x=0; x<SCREEN_W*40;x++)
             {
                 numNeighbors = 0;
-                if (grid[(x-1+SW)%SW,(y+1)%SH].isAlive)
-                    numNeighbors++;
-                if (grid[(x-1+SW)%SW,(y)%SH].isAlive)
-                    numNeighbors++;
-                if (grid[(x-1+SW)%SW,(y-1+SH)%SH].isAlive)
-                    numNeighbors++;
 
-                if (grid[x,(y+1)%SH].isAlive)
-                    numNeighbors++;
-                if (grid[x,(y-1+SH)%SH].isAlive)
-                    numNeighbors++;
+                if(x-1>=0){
+                    if(y+1<SH)
+                        if (grid[x-1,y+1].isAlive)
+                            numNeighbors++;
+                    if (grid[x-1,y].isAlive)
+                        numNeighbors++;
+                    if(y-1>=0)
+                        if (grid[x-1,y-1].isAlive)
+                            numNeighbors++;
+                }
 
-                if (grid[(x+1)%SW,(y+1)%SH].isAlive)
-                    numNeighbors++;
-                if (grid[(x+1)%SW,(y)%SH].isAlive)
-                    numNeighbors++;
-                if (grid[(x+1)%SW,(y-1+SH)%SH].isAlive)
-                    numNeighbors++;
+                if(y+1<SH)
+                    if (grid[x,y+1].isAlive)
+                        numNeighbors++;
+                if(y-1>=0)
+                    if (grid[x,y-1].isAlive)
+                        numNeighbors++;
 
+                if(x+1<SW){
+                    if(y+1<SH)
+                        if (grid[x+1,y+1].isAlive)
+                            numNeighbors++;
+                    if (grid[x+1,y].isAlive)
+                        numNeighbors++;
+                    if(y-1>=0)
+                        if (grid[x+1,y-1].isAlive)
+                            numNeighbors++;
+                }
                 grid[x,y].numNeighbors = numNeighbors;
+
+                if(x>SW || y>SH)
+                    grid[x,y].numNeighbors = 0;
             }
         }
     }
 
     void Populate()
     {
-        for (int y=0; y<SCREEN_H*size; y++)
+        for (int y=0; y<SCREEN_H*40; y++)
         {
-            for(int x=0; x<SCREEN_W*size;x++)
+            for(int x=0; x<SCREEN_W*40;x++)
             {
-                 if (grid[x,y].isAlive)
+                if (grid[x,y].isAlive)
                 {
                     if (grid[x,y].numNeighbors != 2 && grid[x,y].numNeighbors != 3)
                         grid[x,y].SetAlive(false);

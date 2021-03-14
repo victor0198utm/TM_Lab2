@@ -34,14 +34,18 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 81
       Script: {instanceID: 0}
+    - Class: 82
+      Script: {instanceID: 0}
+    - Class: 83
+      Script: {instanceID: 0}
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11412}
+      Script: {instanceID: 11396}
     - Class: 114
-      Script: {instanceID: 12220}
+      Script: {instanceID: 12204}
     - Class: 114
-      Script: {instanceID: 14672}
+      Script: {instanceID: 13954}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 157
@@ -445,6 +449,12 @@ ScriptsOnlyBuild:
     className: BeforeAfterTestCommandState
   - hash:
       serializedVersion: 2
+      Hash: 5df9a7c6d4ce733910b1423b3e8b9271
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: CellGrid
+  - hash:
+      serializedVersion: 2
       Hash: c3d3430df9e3ea95e3e3d587961390fb
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
@@ -551,12 +561,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: PlayableTrack
-  - hash:
-      serializedVersion: 2
-      Hash: 5df9a7c6d4ce733910b1423b3e8b9271
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: CellGrid
   platform: 5
   scenePathNames:
   - Assets/Scenes/SampleScene.unity
